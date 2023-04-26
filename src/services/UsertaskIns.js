@@ -21,7 +21,7 @@ export default function Tasks() {
     bodyFormData.append('taskInstanceId', taskins);
     bodyFormData.append('actionId', act);
     bodyFormData.append('comments', comment);
-    console.log(taskId)
+    console.log(act)
     // alert(act)
     // console.log("comment")
     // console.log(tasks)
