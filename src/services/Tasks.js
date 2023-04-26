@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table';
 
 export default function Tasks() {
     const[tasks,setTask]=useState([])
+    const [cat,setSelectedCategory]=useState([])
 
     const{id}=useParams();
     useEffect(()=>{
@@ -15,6 +16,12 @@ export default function Tasks() {
         const result=await axios.get(`http://localhost:9191/task/fetchTaskList/${id}`)
         setTask(result.data)
     }
+    // const handle=async(e)=>{
+    //     setSelectedCategory(e);
+    //     const resultaction = await axios.get(`http://localhost:9191/action/viewActions/${tid}`);
+
+    // }
+
 
 
   return (
@@ -30,7 +37,7 @@ export default function Tasks() {
                             <th scope="col">Description</th>
                             <th scope="col">UserByID</th>
                             <th scope="col">Role</th>
-                            <th scope="col">Name</th>
+                            {/* <th scope="col">Position</th> */}
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -44,11 +51,13 @@ export default function Tasks() {
                                     <></>
                                     <td>{task.userAuthorized && task.userAuthorized.userId}</td>
                                     <td>{task.role}</td>
-                                    <td>{task.workflow.name}</td>
+                                    {/* <td>{task.position}</td> */}
                                     <td>
-                                        <Link className="btn btn-primary mx-2" to={`/addaction/${id}/${task.taskId}`}>
+                                    {task.position == 'final'? <p>Final task</p> : <Link className="btn btn-primary mx-2" to={`/addaction/${id}/${task.taskId}`}>
                                             Action
-                                        </Link>
+                                        </Link> 
+                                        }
+                                        
                                     </td>
                                 </tr>
                             )
@@ -63,7 +72,7 @@ export default function Tasks() {
         </div>
         </div>
         <div className="footer">
-                <p>Made with ❤️ and 🧑‍💻 by <i>Harsh Tripathi</i></p>
+                <p>Made with ❤️ and 🧑‍💻 by <i>Workflow data model team</i></p>
             </div>
         </div>
   )

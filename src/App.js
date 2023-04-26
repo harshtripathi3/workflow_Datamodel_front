@@ -9,6 +9,8 @@ import Tasks from './services/Tasks';
 import AddAction from './services/AddAction';
 import UserMain from './services/UserMain';
 import UsertaskIns from './services/UsertaskIns';
+import PrevTask from './services/PreviousTask';
+import TaskIns from './services/TaskIns';
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
           <Route exact path="/addaction/:wid/:tid" element={<AddAction />} />
           <Route exact path="/usermain/:id" element={<UserMain />} /> 
           <Route exact path="/userins/:id" element={<UsertaskIns />} />
+          <Route exact path='/prevtask/:id' element={<PrevTask/>} />
+          <Route exact path='/taskins/:id' element={<TaskIns/>} />
           </Routes>
         </Router>
       }

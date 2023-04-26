@@ -38,7 +38,7 @@
   }
 
   .container{
-    margin-top: 5%;
+    margin-top: 2%;
   }
   .footer{
     margin-top: 1rem;
@@ -68,4 +68,9 @@
   border-radius: 0 5px 5px 0;
   cursor: pointer;
   font-size: 20px;
+}
+
+.dark{
+  background-color: rgb(64, 62, 62);
+  color: white;
 }

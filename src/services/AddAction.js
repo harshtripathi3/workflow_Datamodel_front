@@ -3,7 +3,11 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 
+
+let length1 = 0;
+let anyAll = false;
 const AddAction = () => {
+  
     let navigate = useNavigate();
     const[cat,setSelectedCategory]=useState([])
     const [tasks, setTask] = useState([])
@@ -21,16 +25,41 @@ const AddAction = () => {
         const result = await axios.get(`http://localhost:9191/task/fetchTaskList/${wid}`);
         setTask(result.data);
 
+
         const resultaction = await axios.get(`http://localhost:9191/action/viewActions/${tid}`);
         setAllaction(resultaction.data);
-        console.log("hello");
-        console.log(allact);
+        // console.log("hello");
+        // console.log(resultaction.data[0]["task"]["anyAll"]);
+        anyAll = resultaction.data[0]["task"]["anyAll"];
+        length1 = resultaction.data.length
+        // console.log(anyAll);
+        // console.log(length1);
+        // console.log(length1 === 1 && anyAll === true);
+        // console.log(`http://localhost:9191/task/fetchTaskList/${wid}`)
+        // console.log(`http://localhost:9191/action/viewActions/${tid}`);
 
+        // console.log(resultaction.data.length);
+        // console.log(result.data)
     }
     var bodyFormData = new FormData();
     bodyFormData.append('name', action);
+    // alert(cat)
     bodyFormData.append('nextTaskId', cat)
+
+
     const onSubmit = async (e) => {
+        // alert("in functionnnn")
+        // alert(length1 === 1)
+        // alert(anyAll === true)
+        if(length1 === 1 && anyAll === true){
+            console.log("I am where I want to be ");
+            alert("You can not add more than one actions for an 'ALL' task !");
+            navigate(`/addaction/${wid}/${tid}`);
+        }
+        else {
+
+            // alert("noooooo");
+
         axios({
             method: "post",
             url: `http://localhost:9191/action/addAction/${tid}?name=${action}&nextTaskId=${cat}`,
@@ -46,6 +75,7 @@ const AddAction = () => {
                 console.log(response);
             });
         navigate(`/addaction/${wid}/${tid}`);
+        }
     }
 
 
@@ -58,7 +88,7 @@ const AddAction = () => {
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
-                            <th scope="col">nextTaskId</th>
+                            <th scope="col">Next Task ID</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,7 +97,7 @@ const AddAction = () => {
                                 <tr>
                                     <th scope="row" key={index}>{index + 1}</th>
                                     <td>{allacts.name}</td>
-                                    <td>{allacts.nextTask.taskId}</td>
+                                    <td>{allacts.nextTask.description}</td>
                                 </tr>
                             )
                             )
@@ -90,7 +120,7 @@ const AddAction = () => {
                                 required
                             />
                         </div>
-                        Select Next Actions
+                        Select Next Task
                         <div className='mb-3'>
                             
                             <select
@@ -98,10 +128,15 @@ const AddAction = () => {
                                 onChange={(e) => setSelectedCategory(e.target.value)}
                                 className="product-dropdown"
                                 name="product-dropdown"
-                            >
-                                {tasks.map((task) => (
-                                    <option value={task.taskId}>{task.taskId}</option>
-                                ))}
+                            ><option disabled selected value> -- Select an Option -- </option>
+                                {tasks.map((task) => {
+
+                                    if((task.taskId).toString() === tid)
+                                        return  <p>"hello"</p>
+                                    else
+                                        return <option value={task.taskId}>{task.description}</option>
+
+                                    })}
                             </select>
                         </div>
 
@@ -111,6 +146,9 @@ const AddAction = () => {
                         
                     </form>
                 </div>
+            </div>
+            <div className="footer">
+                <p>Made with ❤️ and 🧑‍💻 by <i>Workflow data model team</i></p>
             </div>
         </div>
     )

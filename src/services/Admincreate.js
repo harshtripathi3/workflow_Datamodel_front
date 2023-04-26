@@ -54,6 +54,9 @@ const Admincreate = () => {
         </form>
         </div>
         </div>
+        <div className="footer">
+                <p>Made with ❤️ and 🧑‍💻 by <i>Workflow data model team</i></p>
+            </div>
     </div>
   )
 }

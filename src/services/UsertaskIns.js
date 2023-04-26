@@ -10,6 +10,7 @@ export default function Tasks() {
     const [actions,setAction]=useState([])
     const [act,setSelectedCategory]=useState("")
     const [comment,setComment]=useState([])
+    const [taskId,setTaskId]=useState([])
 
     var bodyFormData = new FormData();
     const{id}=useParams();
@@ -20,8 +21,10 @@ export default function Tasks() {
     bodyFormData.append('taskInstanceId', taskins);
     bodyFormData.append('actionId', act);
     bodyFormData.append('comments', comment);
-    console.log(act)
-    console.log("comment")
+    console.log(taskId)
+    // alert(act)
+    // console.log("comment")
+    // console.log(tasks)
 
     const onSubmit=async(e)=>{
         axios({
@@ -45,11 +48,14 @@ export default function Tasks() {
     const loadUser=async()=>{
         const result=await axios.get(`http://localhost:9191/taskInstance/fetchTaskInstances/${id}`)
         setTask(result.data);
+    
 
-        const resultact =await axios.get(`http://localhost:9191/action/viewActions/${id}`)
+
+    }
+
+    const callact=async()=>{
+        const resultact =await axios.get(`http://localhost:9191/action/viewActions/${taskId}`)
         setAction(resultact.data);
-        console.log(resultact.data)
-
     }
 
 
@@ -62,10 +68,10 @@ export default function Tasks() {
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Comment</th>
-                            <th scope="col">Attchments</th>
+                            <th scope="col">Attachments</th>
                             <th scope="col">Status</th>
                             <th scope="col">Desc</th>
+                            <th scope="col">Comment</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -75,30 +81,32 @@ export default function Tasks() {
                                 
                                 <tr>
                                     <th scope="row" key={index}>{index + 1}</th>
-                                    <td>{task.comments}</td>
-                                    <td>{task.attachments}</td>
+                                    <td>{task.workflowInstance.attachments}</td>
                                     <td>{task.status}</td>
                                     <td>{task.workflowInstance.description}</td>
                                     {/* {setTaskIns(task.taskInstanceId)} */}
                                     {/* <td>{task.workflowInstance.workflow.name}</td> */}
                                     <td>
 
-                                    <form onSubmit={(e)=>onSubmit(e)}>
+                                    
                                         <div className='mb-3'>
                                             <label htmlFor='Name' className='form-label'>
-                                                Comments
+                                                Enter your Comments
                                             </label>
                                             <input
                                                 type={"text"}
                                                 className="form-control"
                                                 placeholder='comments'
                                                 //value="wf_name"
-                                                onChange={(e)=>{setComment(e.target.value);setTaskIns(task.taskInstanceId)}}
+                                                onChange={(e)=>{setComment(e.target.value);setTaskId(task.task.taskId);setTaskIns(task.taskInstanceId);callact()}}
                                                 required
                                             />
                                         </div>
+                                        </td>
+                                        <td>
 
                                         Actions
+                                        <form onSubmit={(e)=>onSubmit(e)}>
                                             <div className='mb-3'>
                                                 
                                                 <select
@@ -106,8 +114,9 @@ export default function Tasks() {
                                                     onClick={(e) => setSelectedCategory(e.target.value)}
                                                     className="product-dropdown"
                                                     >
+                                                        <option disabled selected value> -- Select an Option -- </option>
                                                     {actions.map((action) => (
-                                                        <option value={action.actionId}>{action.actionId}</option>
+                                                        <option value={action.actionId}>{action.name}</option>
                                                     ))}
                                                 </select>
                                             </div>
@@ -133,7 +142,7 @@ export default function Tasks() {
         </div>
         </div>
         <div className="footer">
-                <p>Made with ❤️ and 🧑‍💻 by <i>Harsh Tripathi</i></p>
+                <p>Made with ❤️ and 🧑‍💻 by <i>Workflow data model team</i></p>
             </div>
         </div>
   )

@@ -7,6 +7,7 @@ export default function UserMain() {
     let navigate = useNavigate()
     const [wf, setWf] = useState("");
     const [desc,setDesc] =useState("");
+    const [att,setAtt] =useState("");
     const [allwf,setAllwf] = useState([])
     const{id}=useParams();
     useEffect(()=>{
@@ -17,17 +18,18 @@ export default function UserMain() {
         const result=await axios.get(`http://localhost:9191/workflow/workflowToInitialise/${id}`)
         setAllwf(result.data)
     }
-    const att="link";
+    // const att="link";
     var bodyFormData = new FormData();
     bodyFormData.append('description', desc);
     bodyFormData.append('attachments',att);
 
     console.log(desc);
+    console.log(att);
 
     const onSubmit=async(e)=>{
         axios({
             method: "post",
-            url: `http://localhost:9191/workflowInstance/addWorkflowInstance/1/${wf}`,
+            url: `http://localhost:9191/workflowInstance/addWorkflowInstance/${id}/${wf}`,
             data: bodyFormData,
             headers: { "Content-Type": "multipart/form-data" },
           })
@@ -40,6 +42,7 @@ export default function UserMain() {
               //handle error
               console.log(response);
             });
+            //alert("wf"+{wf})
         navigate(`/usermain/${id}`);
     };
 
@@ -48,21 +51,35 @@ export default function UserMain() {
         <div className='container'>
             <div className='row'>
                 <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
-                    <Link className='btn btn-primary my-2' to={`/userins/${id}`}>See your Task</Link>
+                    <div><Link className='btn btn-primary my-2' to={`/userins/${id}`}>Current Task</Link>
+                    {"             "}<Link className='btn btn-primary my-2' to={`/prevtask/${id}`}>Previous WorkFlow Instance</Link></div>
+                    
                     <form onSubmit={(e)=>onSubmit(e)}>
+                    <Table striped bordered hover >
+                    <thead>
+                        <tr>
+                            <th scope="col">Available Workflow to Instantiate</th>
+                        </tr>
+                    </thead>
+                    <td>
+                    
+                    <select onChange={(e) => setWf(e.target.value)}  class="custom-select custom-select-lg mb-3"  >
+                            <option disabled selected value> -- Select an Option -- </option>
+                            {
+                            allwf?.map((obj) => {
+                                return <option value={obj.workflowId}>{obj.name}</option>
+                                })
+                            }
+                            </select>
+
+                    
+
+                    </td>
+                </Table>
                     <div className='mb-3'>
                             <label htmlFor='Name' className='form-label'>
-                               Enter WorkFlow ID for Instantiate
+                               Enter WorkFlow Description
                             </label>
-                            <input
-                                type={"text"}
-                                className="form-control"
-                                placeholder='Enter Worklfow ID'
-                                //name="wf_name"
-                                //value="wf_name"
-                                onChange={(e) => setWf(e.target.value)}
-                                required
-                            />
                                 <input
                                 type={"text"}
                                 className="form-control"
@@ -72,34 +89,24 @@ export default function UserMain() {
                                 onChange={(e) => setDesc(e.target.value)}
                                 required
                             />
+                            <input
+                                type={"text"}
+                                className="form-control"
+                                placeholder='Enter Attachment link: (Optional)'
+                                //name="wf_desc"
+                                //value="wf_name"
+                                onChange={(e) => setAtt(e.target.value)}
+                                //required
+                            />
                         </div>
                         <button type='submit'  className='btn btn-outline-primary'>Submit</button>
                         {/* <Link className='btn btn-outline-danger mx-2' to="/">Cancel</Link> */}
                     </form >
-                    <Table striped bordered hover >
-                    <thead>
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            allwf.map((flows, index) => (
-                                <tr>
-                                    {/* <th scope="row" key={index}>{index + 1}</th> */}
-                                    <td>{flows.workflowId}</td>
-                                    <td>{flows.name}</td>
-                                </tr>
-                            )
-                            )
-                        }
-                    </tbody>
-                </Table>
+ 
                 </div>
             </div>
             <div className="footer">
-                <p>Made with ❤️ and 🧑‍💻 by <i>Harsh Tripathi</i></p>
+                <p>Made with ❤️ and 🧑‍💻 by <i>Workflow data model team</i></p>
             </div>
         </div>
     );
